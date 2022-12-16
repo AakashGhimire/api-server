@@ -3,9 +3,14 @@ import nodemon from "nodemon";
 import postgres from "postgres";
 import cors from "cors";
 import {readFile} from "node:fs/promises";
+import dotenv from "dotenv";
 
+dotenv.config();
 //const sql = postgres({database: "users"});
-const sql = postgres("postgres://users_gxbv_user:GCs3rOx5CBUAtgRTCQ9x4vEODbXIRiSd@dpg-cednpjkgqg43c91mrmt0-a.oregon-postgres.render.com/users_gxbv?ssl=true");
+//const sql = postgres("postgres://users_gxbv_user:GCs3rOx5CBUAtgRTCQ9x4vEODbXIRiSd@dpg-cednpjkgqg43c91mrmt0-a.oregon-postgres.render.com/users_gxbv?ssl=true");
+
+console.log(process.env.DATABASE_URL);
+const sql = postgres(process.env.DATABASE_URL);
 
 const app = express();
 
@@ -23,10 +28,7 @@ app.use(express.static("client")); //telling the server to use this path to run 
 // });
 
 app.get("/api/person", (req, res)=>{
-    console.log("outside sql statement");
     sql `select * from person`.then((result)=>{
-        console.log("inside sql statement");
-        console.log("result is ",result);
         res.json(result);
     });
 });
@@ -62,7 +64,5 @@ app.patch("/api/person/:id", (req, res)=>{
     });
 
 });
-
-
 
 app.listen(3000);
